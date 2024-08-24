@@ -2,7 +2,7 @@ name: Scheduled Run and Release
 
 on:
   schedule:
-    - cron: "0 */2 * * *" # Alle 2 Stunden
+    - cron: "0 */2 * * *" # Every 2 hours
   workflow_dispatch: # Allows manual execution of the workflow.
 
 jobs:
@@ -27,26 +27,29 @@ jobs:
 
       - name: Run the script
         run: python main.py
-
-      - name: Detect changed files
-        id: changes
-        run: |
-          git fetch --depth=2 # Stelle sicher, dass der vorherige Commit verfügbar ist
-          git diff --name-only HEAD^ HEAD > changed_files.txt || echo "No changes detected"
-          grep '^docs/' changed_files.txt > new_docs_files.txt || true
         continue-on-error: true
 
+      - name: Stage changes in docs and check for changes
+        id: changes
+        run: |
+          git add ./docs/
+          if git diff --cached --quiet; then
+            echo "no_changes=true" >> $GITHUB_ENV
+          else
+            echo "no_changes=false" >> $GITHUB_ENV
+            git diff --cached --name-only > staged_files.txt
+          fi
+
       - name: Commit and push changes
-        if: success()
+        if: success() && env.no_changes == 'false'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add ./docs/
           git commit -m "Add new or updated timetable files"
           git push origin ${{ github.ref }}
 
       - name: Create Release
-        if: success() && ${{ steps.changes.outputs.changed_files != '' }}
+        if: success() && env.no_changes == 'false'
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,4 +59,4 @@ jobs:
           body: "Neuer Stundenplan gefunden!"
           draft: false
           prerelease: false
-          files: $(cat new_docs_files.txt)
+          files: $(cat staged_files.txt)
