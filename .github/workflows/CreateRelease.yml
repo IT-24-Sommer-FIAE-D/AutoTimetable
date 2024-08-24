@@ -27,13 +27,13 @@ jobs:
         run: python main.py
 
       - name: Create Release
-        if: success() # Nur bei erfolgreicher Ausführung von main.py
-        uses: actions/create-release@v1
+        if: success()
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ github.run_number }}"
-          release_name: "Automated release ${{ github.run_number }}"
+          name: "Automated release ${{ github.run_number }}"
           body: "Automated release triggered by successful run."
           draft: false
           prerelease: false
