@@ -38,6 +38,10 @@ jobs:
           else
             echo "no_changes=false" >> $GITHUB_ENV
             git diff --cached --name-only > staged_files.txt
+            # Export the changed files as a multiline environment variable
+            echo "CHANGED_FILES<<EOF" >> $GITHUB_ENV
+            cat staged_files.txt >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
           fi
 
       - name: Commit and push changes
@@ -59,5 +63,4 @@ jobs:
           body: "Neuer Stundenplan gefunden!"
           draft: false
           prerelease: false
-          files: |
-            $(awk '{print}' staged_files.txt)
+          files: ${{ env.CHANGED_FILES }}
