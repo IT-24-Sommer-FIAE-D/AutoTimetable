@@ -1,0 +1,39 @@
+name: Scheduled Run and Release
+
+on:
+  schedule:
+    - cron: "0 */2 * * *" # Alle 2 Stunden
+  workflow_dispatch: # Allows manual execution of the workflow.
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x" # Setze die Python-Version, die du benötigst
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run the script
+        run: python main.py
+
+      - name: Create Release
+        if: success() # Nur bei erfolgreicher Ausführung von main.py
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ github.run_number }}"
+          release_name: "Automated release ${{ github.run_number }}"
+          body: "Automated release triggered by successful run."
+          draft: false
+          prerelease: false
