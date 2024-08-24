@@ -48,6 +48,13 @@ jobs:
           git commit -m "Add new or updated timetable files"
           git push origin ${{ github.ref }}
 
+      - name: Prepare files for release
+        id: prepare_files
+        if: success() && env.no_changes == 'false'
+        run: |
+          files=$(cat staged_files.txt | tr '\n' ' ')
+          echo "files_for_release=$files" >> $GITHUB_ENV
+
       - name: Create Release
         if: success() && env.no_changes == 'false'
         uses: softprops/action-gh-release@v2
@@ -59,4 +66,4 @@ jobs:
           body: "Neuer Stundenplan gefunden!"
           draft: false
           prerelease: false
-          files: $(cat staged_files.txt)
+          files: ${{ env.files_for_release }}
