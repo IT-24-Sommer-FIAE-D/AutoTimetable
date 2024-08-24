@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,8 +31,10 @@ jobs:
       - name: Detect changed files
         id: changes
         run: |
-          git diff --name-only HEAD^ HEAD > changed_files.txt
+          git fetch --depth=2 # Stelle sicher, dass der vorherige Commit verfügbar ist
+          git diff --name-only HEAD^ HEAD > changed_files.txt || echo "No changes detected"
           grep '^docs/' changed_files.txt > new_docs_files.txt || true
+        continue-on-error: true
 
       - name: Commit and push changes
         if: success()
