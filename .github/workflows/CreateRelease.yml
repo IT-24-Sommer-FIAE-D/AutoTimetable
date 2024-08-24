@@ -52,7 +52,7 @@ jobs:
         id: prepare_files
         if: success() && env.no_changes == 'false'
         run: |
-          files=$(cat staged_files.txt | tr '\n' ' ')
+          files=$(cat staged_files.txt)
           echo "files_for_release=$files" >> $GITHUB_ENV
 
       - name: Create Release
