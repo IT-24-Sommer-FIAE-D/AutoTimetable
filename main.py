@@ -3,27 +3,11 @@ import hashlib
 import requests
 from bs4 import BeautifulSoup
 
-# URL der Webseite
-url = "https://service.viona24.com/stpusnl/"
-base_url = url
-
-# Verzeichnisse
-dist_dir = './dist/'
-docs_dir = './docs/'
-
-# Verzeichnisse erstellen, falls sie nicht existieren
-os.makedirs(dist_dir, exist_ok=True)
-os.makedirs(docs_dir, exist_ok=True)
-
-# Webseite herunterladen
-response = requests.get(url)
-response.raise_for_status()  # Check if the request was successful
-
-# HTML parsen
-soup = BeautifulSoup(response.text, 'lxml')
-
-# Die Liste mit der ID 'thelist' finden
-thelist = soup.find('ul', id='thelist')
+# Configuration
+timetable_url = "https://service.viona24.com/stpusnl/"
+search_text = "US IT 2024 Sommer FIAE D"
+dist_dir = './dist/' # Temporärer Speicherort für heruntergeladene Dateien
+docs_dir = './docs/' # Endgültiger Speicherort für Dateien
 
 # Funktion zum Berechnen des Hashes einer Datei
 def file_hash(filepath):
@@ -33,19 +17,35 @@ def file_hash(filepath):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
 
+################################################################################
+
+# Die Verzeichnisse erstellen, falls sie nicht existieren
+os.makedirs(dist_dir, exist_ok=True)
+os.makedirs(docs_dir, exist_ok=True)
+
+# Webseite herunterladen
+response = requests.get(timetable_url)
+response.raise_for_status() # Wirft eine Exception, wenn ein HTTP-Fehler auftritt
+
+# HTML parsen
+soup = BeautifulSoup(response.text, 'lxml')
+
+# Die Liste mit der ID 'thelist' finden -> <ul id="thelist">...</ul>
+thelist = soup.find('ul', id='thelist')
+
 # Variable, um zu verfolgen, ob neue Dateien gefunden wurden
 new_files_found = False
 
-# Alle li-Elemente in der Liste durchsuchen
+# Alle li-Elemente in der Liste durchsuchen -> <li>...</li>
 for li in thelist.find_all('li'):
-    # Den span mit der Klasse 'name' finden
+    # Den span mit der Klasse 'name' finden: Das Span-Element mit der Klasse 'name' enthält den Namen des Kurses.
     name_span = li.find('span', class_='name')
     
     # Überprüfen, ob der Name den gesuchten Text enthält
-    if name_span and "US IT 2024 Sommer FIAE D" in name_span.get_text():
+    if name_span and search_text in name_span.get_text():
         # Das href-Attribut des a-Tags extrahieren
         link = li.find('a').get('href')
-        full_link = base_url + link.strip('./')
+        full_link = timetable_url + link.strip('./')
         filename = os.path.basename(link)
         dist_path = os.path.join(dist_dir, filename)
         docs_path = os.path.join(docs_dir, filename)
@@ -58,6 +58,7 @@ for li in thelist.find_all('li'):
         # Prüfen, ob die Datei bereits in ./docs/ existiert
         if os.path.exists(docs_path):
             # Hash der heruntergeladenen Datei und der vorhandenen Datei vergleichen
+            # Ein Hash ist eine eindeutige Zeichenfolge, die den Inhalt einer Datei repräsentiert
             if file_hash(dist_path) != file_hash(docs_path):
                 # Datei ist neuer oder hat sich geändert, kopieren
                 new_files_found = True
@@ -67,7 +68,8 @@ for li in thelist.find_all('li'):
             new_files_found = True
             os.replace(dist_path, docs_path)
 
-# Programm mit Fehlercode beenden, wenn keine neuen Dateien vorhanden sind
+# Programm mit Fehlercode beenden, wenn keine neuen Dateien vorhanden sind.
+# Der Workflow beachtet den Fehlercode und erstellt keinen Release, wenn das Skript mit einem Fehlercode beendet wird.
 if not new_files_found:
     print("No new or updated files found.")
     exit(1)
