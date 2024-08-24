@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ github.run_number }}"
-          name: "New Timetable release nr. ${{ github.run_number }}"
+          name: "Stundenplan Release nr. ${{ github.run_number }}"
           body: "Neuer Stundenplan gefunden!"
           draft: false
           prerelease: false
