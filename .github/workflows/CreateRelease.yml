@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x" # Setze die Python-Version, die du benötigst
+          python-version: "3.x"
 
       - name: Install dependencies
         run: |
@@ -26,14 +26,30 @@ jobs:
       - name: Run the script
         run: python main.py
 
-      - name: Create Release
+      - name: Detect changed files
+        id: changes
+        run: |
+          git diff --name-only HEAD^ HEAD > changed_files.txt
+          grep '^docs/' changed_files.txt > new_docs_files.txt || true
+
+      - name: Commit and push changes
         if: success()
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add ./docs/
+          git commit -m "Add new or updated timetable files"
+          git push origin ${{ github.ref }}
+
+      - name: Create Release
+        if: success() && ${{ steps.changes.outputs.changed_files != '' }}
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "v${{ github.run_number }}"
-          name: "Automated release ${{ github.run_number }}"
-          body: "Automated release triggered by successful run."
+          name: "New Timetable release nr. ${{ github.run_number }}"
+          body: "Neuer Stundenplan gefunden!"
           draft: false
           prerelease: false
+          files: $(cat new_docs_files.txt)
