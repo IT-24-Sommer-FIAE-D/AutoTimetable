@@ -2,10 +2,11 @@ import os
 import hashlib
 import requests
 from bs4 import BeautifulSoup
+import re
 
 # Configuration
 timetable_url = "https://service.viona24.com/stpusnl/"
-search_text = "US IT 2024 Sommer FIAE D"
+search_text = re.compile(r"US IT 2024 Sommer FIAE [DE]") # RegEx für den gesuchten Text: Siehe regexr.com/85b01
 dist_dir = './dist/' # Temporärer Speicherort für heruntergeladene Dateien
 docs_dir = './docs/' # Endgültiger Speicherort für Dateien
 
@@ -42,7 +43,7 @@ for li in thelist.find_all('li'):
     name_span = li.find('span', class_='name')
     
     # Überprüfen, ob der Name den gesuchten Text enthält
-    if name_span and search_text in name_span.get_text():
+    if name_span and search_text.search(name_span.get_text()):
         # Das href-Attribut des a-Tags extrahieren
         link = li.find('a').get('href')
         full_link = timetable_url + link.strip('./')
