@@ -66,7 +66,7 @@ namespace AutoTimetable
                     }
                 }
             }
-            catch (System.Exception)
+            catch
             {
                 this.pdfStream = null;
                 return false;
@@ -123,7 +123,7 @@ namespace AutoTimetable
                     this.pdfStream?.WriteTo(file);
                 }
             }
-            catch (System.Exception)
+            catch
             {
                 return false;
             }
