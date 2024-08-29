@@ -1,2 +1,4 @@
 dist/*
 docs/*.pdf
+*/bin/*
+*/obj/*
