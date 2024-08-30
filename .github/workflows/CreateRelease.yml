@@ -1,8 +1,8 @@
 name: Scheduled Run and Release
 
 on:
-  schedule:
-    - cron: "0 */1 * * *" # Every 1 hours
+  # schedule:
+  #   - cron: "0 */1 * * *" # Every 1 hours
   workflow_dispatch: # Allows manual execution of the workflow.
 
 jobs:
