@@ -45,7 +45,7 @@ jobs:
           fi
 
       - name: Commit and push changes to gh_pages branch
-        if: success() && env.no_changes == 'false'
+        if: env.no_changes == 'false'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
@@ -55,7 +55,7 @@ jobs:
           git push origin gh_pages --force
 
       - name: Create Release
-        if: success() && env.no_changes == 'false'
+        if: env.no_changes == 'false'
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
