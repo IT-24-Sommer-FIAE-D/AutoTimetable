@@ -70,7 +70,7 @@ for li in thelist.find_all('li'):
             os.replace(dist_path, docs_path)
 
 # Programm mit Fehlercode beenden, wenn keine neuen Dateien vorhanden sind.
-# Der Workflow beachtet den Fehlercode und erstellt keinen Release, wenn das Skript mit einem Fehlercode beendet wird.
+# Der Workflow beachtet den Fehlercode **nicht**.
 if not new_files_found:
     print("No new or updated files found.")
     exit(1)
