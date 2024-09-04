@@ -1,8 +1,8 @@
 name: Scheduled Run and Release
 
 on:
-  # schedule:
-  #   - cron: "0 */1 * * *" # Every 1 hours
+  schedule:
+    - cron: "0 */1 * * *" # Every 1 hours
   workflow_dispatch: # Allows manual execution of the workflow.
 
 jobs:
@@ -32,6 +32,7 @@ jobs:
       - name: Stage changes in docs and check for changes
         id: changes
         run: |
+          git checkout -b gh_pages
           git add ./docs/
           if git diff --cached --quiet; then
             echo "no_changes=true" >> $GITHUB_ENV
@@ -45,17 +46,16 @@ jobs:
           fi
 
       - name: Commit and push changes to gh_pages branch
-        if: success() && env.no_changes == 'false'
+        if: env.no_changes == 'false'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git checkout -b gh_pages
           git add ./docs/
           git commit -m "Update docs in gh_pages branch"
           git push origin gh_pages --force
 
       - name: Create Release
-        if: success() && env.no_changes == 'false'
+        if: env.no_changes == 'false'
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
