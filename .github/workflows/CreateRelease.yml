@@ -13,8 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: gh_pages
+          ref: main
           fetch-depth: 2
+
+      - name: Change to gh_pages branch
+        run: |
+          git checkout -b gh_pages
 
       - name: Set up Python
         uses: actions/setup-python@v5
