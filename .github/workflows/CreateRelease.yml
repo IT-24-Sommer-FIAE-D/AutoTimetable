@@ -32,7 +32,7 @@ jobs:
       - name: Stage changes in docs and check for changes
         id: changes
         run: |
-          git checkout gh_pages
+          git checkout -b gh_pages
           git add ./docs/
           if git diff --cached --quiet; then
             echo "no_changes=true" >> $GITHUB_ENV
