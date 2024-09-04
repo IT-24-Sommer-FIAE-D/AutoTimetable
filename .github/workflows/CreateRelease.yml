@@ -13,10 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: main # Checkout the main branch, to get the latest code
           fetch-depth: 2
 
-      - name: Change to gh_pages branch
+      - name: Change to gh_pages branch # Checkout the gh_pages branch, to update the docs
         run: |
           git checkout -b gh_pages
 
