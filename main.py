@@ -4,13 +4,15 @@ import requests
 from bs4 import BeautifulSoup
 import re
 
-# Configuration
-timetable_url = "https://service.viona24.com/stpusnl/"
-search_text = re.compile(r"US IT 2024 Sommer FIAE [DE]") # RegEx für den gesuchten Text: Siehe regexr.com/85b01
-dist_dir = './dist/' # Temporärer Speicherort für heruntergeladene Dateien
-docs_dir = './docs/' # Endgültiger Speicherort für Dateien
+### Konfiguration ###
+timetable_url = "https://service.viona24.com/stpusnl/"   # URL der Webseite mit dem Stundenplan
+search_text = re.compile(r"US IT 2024 Sommer FIAE [DE]") # RegEx für den gesuchten Text: Siehe https://regexr.com/85b01
+dist_dir = './dist/'                                     # Temporärer Speicherort für heruntergeladene Dateien
+docs_dir = './docs/'                                     # Endgültiger Speicherort für Dateien
+#####################
 
-# Funktion zum Berechnen des Hashes einer Datei
+# Funktion zum Berechnen des Hashes einer Datei: Siehe https://de.wikipedia.org/wiki/Message-Digest_Algorithm_5 & https://www.md5hashgenerator.com/
+# Wichtig: MD5 ist nicht mehr sicher! Verwenden Sie für sensible Daten z.B. SHA-256. Siehe weiter Zeile 71.
 def file_hash(filepath):
     hash_md5 = hashlib.md5()
     with open(filepath, "rb") as f:
@@ -20,38 +22,46 @@ def file_hash(filepath):
 
 ################################################################################
 
-# Die Verzeichnisse erstellen, falls sie nicht existieren
+# Die oben definierten Verzeichnisse erstellen, wenn sie nicht existieren
 os.makedirs(dist_dir, exist_ok=True)
 os.makedirs(docs_dir, exist_ok=True)
 
-# Webseite herunterladen
+# Die Webseite mit dem Stundenplan herunterladen
 response = requests.get(timetable_url)
-response.raise_for_status() # Wirft eine Exception, wenn ein HTTP-Fehler auftritt
+response.raise_for_status()             # Wirft eine Exception, wenn ein HTTP-Fehler auftritt: Das Programm wird beendet.
 
-# HTML parsen
+# HTML parsen: Das HTML-Dokument wird in ein Objekt umgewandelt, das wir durchsuchen können.
 soup = BeautifulSoup(response.text, 'lxml')
 
-# Die Liste mit der ID 'thelist' finden -> <ul id="thelist">...</ul>
+# Die Liste mit der ID 'thelist' finden -> <ul id="thelist">...</ul>. Diese Liste enthält für jeden Stundenplan ein <li>-Element.
 thelist = soup.find('ul', id='thelist')
 
-# Variable, um zu verfolgen, ob neue Dateien gefunden wurden
+# Variable, um zu verfolgen, ob neue Dateien gefunden wurden. Damit wir am Ende des Programms eine entsprechende Meldung ausgeben können.
 new_files_found = False
 
+# Alle li-Elemente in der Liste abrufen: Ein li-Element entspricht einem Kurs im Stundenplan -> <li>...</li>
+li_list = thelist.find_all('li')
+
+# Falls keine li-Elemente gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1. Danke an @iptoux für den Hinweis.
+if not li_list:
+    print("Keine li-Elemente gefunden.")
+    exit(1) # Exit-Code 1 bedeutet, dass es keine Änderungen gab.
+
 # Alle li-Elemente in der Liste durchsuchen -> <li>...</li>
-for li in thelist.find_all('li'):
-    # Den span mit der Klasse 'name' finden: Das Span-Element mit der Klasse 'name' enthält den Namen des Kurses.
+for li in li_list:
+    # Den span mit der Klasse 'name' finden: Das Span-Element mit der Klasse 'name' enthält den Namen des Kurses -> <span class="name">...</span>
     name_span = li.find('span', class_='name')
     
-    # Überprüfen, ob der Name den gesuchten Text enthält
+    # Überprüfen, ob der Kursname dem Suchtext entspricht: Siehe `search_text` oben.
     if name_span and search_text.search(name_span.get_text()):
-        # Das href-Attribut des a-Tags extrahieren
+        # Das href-Attribut des a-Tags extrahieren. Das href-Attribut enthält den Link zur Datei -> <a href="...">...</a>
         link = li.find('a').get('href')
-        full_link = timetable_url + link.strip('./')
-        filename = os.path.basename(link)
-        dist_path = os.path.join(dist_dir, filename)
-        docs_path = os.path.join(docs_dir, filename)
+        full_link = timetable_url + link.strip('./') # Den vollständigen Link zur Datei erstellen
+        filename = os.path.basename(link)            # Den Dateinamen extrahieren
+        dist_path = os.path.join(dist_dir, filename) # Pfad zum temporären Speicherort
+        docs_path = os.path.join(docs_dir, filename) # Pfad zum endgültigen Speicherort
         
-        # Datei herunterladen und in ./dist/ speichern
+        # Datei herunterladen und in `./dist/` temporär speichern.
         file_response = requests.get(full_link)
         with open(dist_path, 'wb') as file:
             file.write(file_response.content)
@@ -59,20 +69,23 @@ for li in thelist.find_all('li'):
         # Prüfen, ob die Datei bereits in ./docs/ existiert
         if os.path.exists(docs_path):
             # Hash der heruntergeladenen Datei und der vorhandenen Datei vergleichen
-            # Ein Hash ist eine eindeutige Zeichenfolge, die den Inhalt einer Datei repräsentiert
+            # Der Hash wird verwendet, um festzustellen, ob sich die Datei geändert hat.
+            # Wenn sich auch nur ein einziges Bit in der Datei ändert, ändert sich auch der Hash -> Lawinenprinzip: https://de.wikipedia.org/wiki/Lawineneffekt_(Kryptographie)
             if file_hash(dist_path) != file_hash(docs_path):
-                # Datei ist neuer oder hat sich geändert, kopieren
+                # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./docs/`-Verzeichnis.
                 new_files_found = True
                 os.replace(dist_path, docs_path)
         else:
-            # Datei ist neu, kopieren
+            # Die Datei existiert noch nicht in `./docs/`. Daher kopieren wir sie dorthin.
             new_files_found = True
             os.replace(dist_path, docs_path)
 
-# Programm mit Fehlercode beenden, wenn keine neuen Dateien vorhanden sind.
-# Der Workflow beachtet den Fehlercode **nicht**.
+# Wenn keine neuen Dateien gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
+# Die Fehler-Codes sind standardisiert: Exit-Code 0 bedeutet, dass das Programm erfolgreich beendet wurde. Alle anderen Werte bedeuten, dass ein Fehler aufgetreten ist.
 if not new_files_found:
-    print("No new or updated files found.")
+    print("Keine neuen oder aktualisierten Dateien gefunden.")
     exit(1)
 else:
-    print("New or updated files were found and copied.")
+    print("Neue oder aktualisierte Dateien gefunden und kopiert.")
+
+# Wenn neue Dateien gefunden wurden, beendet sich das Programm hier von selbst mit Exit-Code 0.
