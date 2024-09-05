@@ -20,6 +20,11 @@ jobs:
         run: |
           git checkout gh_pages
 
+      - name: Get main.py from main branch
+        run: |
+          git checkout main -- ./main.py
+          git checkout main -- ./requirements.txt
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
