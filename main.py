@@ -28,7 +28,10 @@ os.makedirs(docs_dir, exist_ok=True)
 
 # Die Webseite mit dem Stundenplan herunterladen
 response = requests.get(timetable_url)
-response.raise_for_status()             # Wirft eine Exception, wenn ein HTTP-Fehler auftritt: Das Programm wird beendet.
+# Wenn der Statuscode nicht 200 ist, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
+if response.status_code != 200: # HTTP-Statuscode 200 bedeutet, dass die Anfrage erfolgreich war. Siehe https://de.wikipedia.org/wiki/HTTP-Statuscode
+    print("HTTP Fehler aufgetreten:", response.status_code)
+    exit(1)
 
 # HTML parsen: Das HTML-Dokument wird in ein Objekt umgewandelt, das wir durchsuchen können.
 soup = BeautifulSoup(response.text, 'lxml')
