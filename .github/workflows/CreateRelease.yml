@@ -79,7 +79,7 @@ jobs:
         with:
           tag_name: "r${{ github.run_number }}"
           name: "Neuer Stundenplan veröffentlicht"
-          body: "Es wurden die folgenden neuen Stundenpläne veröffentlicht:"
+          body: "Es wurden neue oder geänderte Stundenpläne gefunden und es wurden die folgenden neuen/geänderten Stundenpläne veröffentlicht:"
           draft: false
           prerelease: false
           files: ${{ env.CHANGED_FILES }}
