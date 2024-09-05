@@ -36,7 +36,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run the script # Das Python Skript ausführen
-        run: python main.py
+        run: |
+          python main.py
+          echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_ENV
         continue-on-error: true
 
       - name: Stage changes in docs and check for changes # Die Änderungen in `docs/` hinzufügen und prüfen, ob es Änderungen gibt
@@ -55,12 +57,13 @@ jobs:
           fi
 
       - name: Delete `main.py` and `requirements.txt` # Die `main.py` und `requirements.txt` Dateien löschen, damit sie nicht im `gh_pages` branch landen.
+        if: env.no_changes == 'false' && env.SCRIPT_EXIT_CODE == '0'
         run: |
           rm main.py
           rm requirements.txt
 
       - name: Commit and push changes to gh_pages branch # Die Änderungen in den `gh_pages` branch pushen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
-        if: env.no_changes == 'false'
+        if: env.no_changes == 'false' && env.SCRIPT_EXIT_CODE == '0'
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
@@ -69,14 +72,14 @@ jobs:
           git push origin gh_pages --force
 
       - name: Create Release # Ein Release erstellen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
-        if: env.no_changes == 'false'
+        if: env.no_changes == 'false' && env.SCRIPT_EXIT_CODE == '0'
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: "v${{ github.run_number }}"
-          name: "Stundenplan Release nr. ${{ github.run_number }}"
-          body: "Neuer Stundenplan gefunden!"
+          tag_name: "r${{ github.run_number }}"
+          name: "Neuer Stundenplan veröffentlicht"
+          body: "Es wurden die folgenden neuen Stundenpläne veröffentlicht:"
           draft: false
           prerelease: false
           files: ${{ env.CHANGED_FILES }}
