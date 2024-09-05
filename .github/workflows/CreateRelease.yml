@@ -18,7 +18,9 @@ jobs:
 
       - name: Change to gh_pages branch # Checkout the gh_pages branch, to update the docs
         run: |
-          git checkout -b gh_pages
+          git checkout gh_pages
+          git checkout main -- ./main.py
+          git checkout main -- ./requirements.txt
 
       - name: Set up Python
         uses: actions/setup-python@v5
