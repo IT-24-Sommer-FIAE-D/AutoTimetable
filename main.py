@@ -65,9 +65,13 @@ for li in li_list:
         docs_path = os.path.join(docs_dir, filename) # Pfad zum endgültigen Speicherort
         
         # Datei herunterladen und in `./dist/` temporär speichern.
-        file_response = requests.get(full_link)
-        with open(dist_path, 'wb') as file:
-            file.write(file_response.content)
+        try:
+            file_response = requests.get(full_link)
+            with open(dist_path, 'wb') as file:
+                file.write(file_response.content)
+        except Exception as e:
+            print("Fehler beim Herunterladen der Datei:", str(e))
+            exit(1)
         
         # Prüfen, ob die Datei bereits in ./docs/ existiert
         if os.path.exists(docs_path):
@@ -77,11 +81,19 @@ for li in li_list:
             if file_hash(dist_path) != file_hash(docs_path):
                 # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./docs/`-Verzeichnis.
                 new_files_found = True
-                os.replace(dist_path, docs_path)
+                try:
+                    os.replace(dist_path, docs_path)
+                except Exception as e:
+                    print("Fehler beim Ersetzen der Datei:", str(e))
+                    exit(1)
         else:
             # Die Datei existiert noch nicht in `./docs/`. Daher kopieren wir sie dorthin.
             new_files_found = True
-            os.replace(dist_path, docs_path)
+            try:
+                os.replace(dist_path, docs_path)
+            except Exception as e:
+                print("Fehler beim Verschieben der Datei:", str(e))
+                exit(1)
 
 # Wenn keine neuen Dateien gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
 # Die Fehler-Codes sind standardisiert: Exit-Code 0 bedeutet, dass das Programm erfolgreich beendet wurde. Alle anderen Werte bedeuten, dass ein Fehler aufgetreten ist.
