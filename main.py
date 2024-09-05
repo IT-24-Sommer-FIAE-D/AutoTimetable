@@ -90,5 +90,4 @@ if not new_files_found:
     exit(1)
 else:
     print("Neue oder aktualisierte Dateien gefunden und kopiert.")
-
-# Wenn neue Dateien gefunden wurden, beendet sich das Programm hier von selbst mit Exit-Code 0.
+    # Wenn neue Dateien gefunden wurden, beendet sich das Programm hier von selbst mit Exit-Code 0.
