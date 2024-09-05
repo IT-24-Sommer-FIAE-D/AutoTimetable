@@ -54,6 +54,11 @@ jobs:
             echo "EOF" >> $GITHUB_ENV
           fi
 
+      - name: Delete `main.py` and `requirements.txt` # Die `main.py` und `requirements.txt` Dateien löschen, damit sie nicht im `gh_pages` branch landen.
+        run: |
+          rm main.py
+          rm requirements.txt
+
       - name: Commit and push changes to gh_pages branch # Die Änderungen in den `gh_pages` branch pushen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
         if: env.no_changes == 'false'
         run: |
