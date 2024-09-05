@@ -46,7 +46,7 @@ new_files_found = False
 li_list = thelist.find_all('li')
 
 # Falls keine li-Elemente gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1. Danke an @iptoux für den Hinweis.
-if not li_list:
+if not li_list or len(li_list) == 0:
     print("Keine li-Elemente gefunden.")
     exit(1) # Exit-Code 1 bedeutet, dass es keine Änderungen gab.
 
