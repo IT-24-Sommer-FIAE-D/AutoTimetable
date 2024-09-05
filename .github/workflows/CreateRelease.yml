@@ -2,44 +2,44 @@ name: Scheduled Run and Release
 
 on:
   schedule:
-    - cron: "0 */1 * * *" # Every 1 hours
-  workflow_dispatch: # Allows manual execution of the workflow.
+    - cron: "0 */1 * * *" # Wird jede Stunde ausgeführt: Siehe https://www.linuxwiki.de/crontab
+  workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout code # Den `main` branch auschecken
         uses: actions/checkout@v4
         with:
-          ref: main # Checkout the main branch, to get the latest code
+          ref: main
           fetch-depth: 0
 
-      - name: Change to gh_pages branch # Checkout the gh_pages branch, to update the docs
+      - name: Change to gh_pages branch # Zum `gh_pages` branch wechseln
         run: |
           git checkout gh_pages
 
-      - name: Get main.py from main branch
+      - name: Get main.py from main branch # Die `main.py` und `requirements.txt` Dateien aus dem `main` branch holen
         run: |
           git checkout main -- ./main.py
           git checkout main -- ./requirements.txt
 
-      - name: Set up Python
+      - name: Set up Python # Python 3.x installieren
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
+      - name: Install dependencies # Die benötigten Python Pakete installieren: Siehe `requirements.txt`
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run the script
+      - name: Run the script # Das Python Skript ausführen
         run: python main.py
         continue-on-error: true
 
-      - name: Stage changes in docs and check for changes
+      - name: Stage changes in docs and check for changes # Die Änderungen in `docs/` hinzufügen und prüfen, ob es Änderungen gibt
         id: changes
         run: |
           git add ./docs/
@@ -54,7 +54,7 @@ jobs:
             echo "EOF" >> $GITHUB_ENV
           fi
 
-      - name: Commit and push changes to gh_pages branch
+      - name: Commit and push changes to gh_pages branch # Die Änderungen in den `gh_pages` branch pushen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
         if: env.no_changes == 'false'
         run: |
           git config --local user.email "actions@github.com"
@@ -63,7 +63,7 @@ jobs:
           git commit -m "Update docs in gh_pages branch"
           git push origin gh_pages --force
 
-      - name: Create Release
+      - name: Create Release # Ein Release erstellen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
         if: env.no_changes == 'false'
         uses: softprops/action-gh-release@v2
         env:
