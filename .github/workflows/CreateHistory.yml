@@ -1,0 +1,62 @@
+name: Create a Markdown file with the history of the timetables
+
+on:
+  push:
+    branches:
+      - gh_pages
+    paths:
+      - "dist/*.pdf"
+  workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code # Den `main` branch auschecken
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Change to gh_pages branch # Zum `gh_pages` branch wechseln
+        run: |
+          git checkout gh_pages
+
+      - name: Get `src` from `main` branch # Die `src/` Dateien aus dem `main` branch holen.
+        run: |
+          git checkout main -- ./src
+
+      - name: Set up Python # Python 3.x installieren
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies # Die benötigten Python Pakete installieren: Siehe `requirements.txt`
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./src/requirements.txt
+
+      - name: Run the script # Das Python Skript ausführen
+        run: |
+          python ./src/md_generator.py
+          echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_ENV
+        continue-on-error: true
+
+      - name: Delete `src` and reset changes # Die `src/` Dateien löschen und die Änderungen zurücksetzen
+        run: |
+          rm -rf ./src/
+          git reset -- ./src
+
+      - name: Stage changes in ./dist/index.md and check for changes # Die Änderungen in `./dist/index.md` hinzufügen und prüfen, ob es Änderungen gibt
+        run: |
+          git add ./dist/index.md
+          if git diff --cached --quiet; then
+            echo "No changes in ./dist/index.md"
+          else
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add ./dist/index.md
+            git commit -m "Update index.md in gh_pages branch"
+            git push origin gh_pages --force
+          fi
