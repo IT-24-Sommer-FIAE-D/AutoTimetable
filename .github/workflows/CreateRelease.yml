@@ -1,8 +1,6 @@
 name: Scheduled Run and Release
 
 on:
-  schedule:
-    - cron: "0 */1 * * *" # Wird jede Stunde ausgeführt: Siehe https://www.linuxwiki.de/crontab
   workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
