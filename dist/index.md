@@ -1,7 +1,7 @@
 # Stundenpläne
 
-### [Aktuellster Plan Kurs D (KW 37)](/home/runner/work/AutoTimetable/AutoTimetable/src/../dist//US_IT_2024_Sommer_FIAE_D_2024_abKW37.pdf)
-### [Aktuellster Plan Kurs E (KW 37)](/home/runner/work/AutoTimetable/AutoTimetable/src/../dist//US_IT_2024_Sommer_FIAE_E_2024_abKW37.pdf)
+### [Aktuellster Plan Kurs D (KW 37)](./US_IT_2024_Sommer_FIAE_D_2024_abKW37.pdf)
+### [Aktuellster Plan Kurs E (KW 37)](./US_IT_2024_Sommer_FIAE_E_2024_abKW37.pdf)
 
 ---
 
