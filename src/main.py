@@ -35,10 +35,34 @@ def file_hash(filepath):
 # Im Falle eines Fehlers wird das Programm mit Exit-Code 1 beendet.
 def replace_or_create_file(temp_path, dist_path, action='Ersetzen'):
     try:
-        os.replace(temp_path, dist_path)
+        # Wenn die Datei noch nicht existiert, kopieren wir sie einfach.
+        if not os.path.exists(dist_path):
+            os.replace(temp_path, dist_path)
+        else: # Wenn die Datei existiert, bennen wir sie um und kopieren die neue Datei.
+            rename_and_copy_file(temp_path, dist_path)
     except Exception as e:
         print(f"Fehler beim {action} der Datei:", str(e))
         exit(1)
+
+# Funktion zum Umbenennen einer Datei, wenn eine Datei mit dem gleichen Namen bereits existiert.
+# Damit erhalten wir eine einfache Historie der Dateien: `datei_0.pdf`, `datei_1.pdf`, `datei_2.pdf`, ...
+# Wobei `_0` das Original ist und `_1`, `_2`, ... die Kopien sind und die neueste Kopie immer ohne Präfix ist.
+# Im Falle eines Fehlers wird das Programm mit Exit-Code 1 beendet.
+def rename_and_copy_file(temp_path, dist_path):
+    # Wir fügen der Datei ein Postfix hinzu, um sie von der alten Datei zu unterscheiden: `_nn`, wobei `nn` für eine fortlaufende Nummer steht.
+    nn = 0
+    # Wir extrahieren den Dateinamen ohne Endung, um den Postfix hinzuzufügen.
+    filename, file_extension = os.path.splitext(os.path.basename(dist_path))
+    # Wir beginnen bei 0 und erhöhen die Nummer, bis wir einen freien Dateinamen gefunden haben.
+    for nn in range(1000):
+        final_filename = f'{filename}_{nn:02}{file_extension}'
+        final_dist_path = os.path.join(os.path.dirname(dist_path), final_filename)
+        if not os.path.exists(final_dist_path):
+            # Wenn wir einen freien Dateinamen gefunden haben, verschieben wir die Datei dorthin.
+            os.replace(dist_path, final_dist_path)
+            # Und kopieren die neue Datei in den endgültigen Speicherort.
+            os.replace(temp_path, dist_path)
+            break
 
 # Funktion zum Sicherstellen, dass die benötigten Verzeichnisse existieren: Siehe https://docs.python.org/3/library/os.html#os.makedirs
 def create_directories(dir_paths):
