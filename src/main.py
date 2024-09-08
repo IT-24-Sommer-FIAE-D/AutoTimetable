@@ -49,20 +49,24 @@ def replace_or_create_file(temp_path, dist_path, action='Ersetzen'):
 # Wobei `_0` das Original ist und `_1`, `_2`, ... die Kopien sind und die neueste Kopie immer ohne Präfix ist.
 # Im Falle eines Fehlers wird das Programm mit Exit-Code 1 beendet.
 def rename_and_copy_file(temp_path, dist_path):
-    # Wir fügen der Datei ein Postfix hinzu, um sie von der alten Datei zu unterscheiden: `_nn`, wobei `nn` für eine fortlaufende Nummer steht.
-    nn = 0
-    # Wir extrahieren den Dateinamen ohne Endung, um den Postfix hinzuzufügen.
-    filename, file_extension = os.path.splitext(os.path.basename(dist_path))
-    # Wir beginnen bei 0 und erhöhen die Nummer, bis wir einen freien Dateinamen gefunden haben.
-    for nn in range(1000):
-        final_filename = f'{filename}_{nn:02}{file_extension}'
-        final_dist_path = os.path.join(os.path.dirname(dist_path), final_filename)
-        if not os.path.exists(final_dist_path):
-            # Wenn wir einen freien Dateinamen gefunden haben, verschieben wir die Datei dorthin.
-            os.replace(dist_path, final_dist_path)
-            # Und kopieren die neue Datei in den endgültigen Speicherort.
-            os.replace(temp_path, dist_path)
-            break
+    try:
+        # Wir fügen der Datei ein Postfix hinzu, um sie von der alten Datei zu unterscheiden: `_nn`, wobei `nn` für eine fortlaufende Nummer steht.
+        nn = 0
+        # Wir extrahieren den Dateinamen ohne Endung, um den Postfix hinzuzufügen.
+        filename, file_extension = os.path.splitext(os.path.basename(dist_path))
+        # Wir beginnen bei 0 und erhöhen die Nummer, bis wir einen freien Dateinamen gefunden haben.
+        for nn in range(1000):
+            final_filename = f'{filename}_{nn:02}{file_extension}'
+            final_dist_path = os.path.join(os.path.dirname(dist_path), final_filename)
+            if not os.path.exists(final_dist_path):
+                # Wenn wir einen freien Dateinamen gefunden haben, verschieben wir die Datei dorthin.
+                os.replace(dist_path, final_dist_path)
+                # Und kopieren die neue Datei in den endgültigen Speicherort.
+                os.replace(temp_path, dist_path)
+                break
+    except Exception as e:
+        print(f"Fehler beim Umbennen der alten Datei or dem Kopieren der neuen Datei:", str(e))
+        exit(1)
 
 # Funktion zum Sicherstellen, dass die benötigten Verzeichnisse existieren: Siehe https://docs.python.org/3/library/os.html#os.makedirs
 def create_directories(dir_paths):
