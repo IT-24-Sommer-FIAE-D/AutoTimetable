@@ -89,8 +89,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "r${{ github.run_number }}"
-          name: "Neuer Stundenplan veröffentlicht"
-          body: "[Hier findest du die neuesten Stundenpläne!](https://it-24-sommer-fiae-d.github.io/AutoTimetable/dist/index)\n\nEs wurden die folgenden neuen/geänderten Stundenpläne veröffentlicht:"
+          name: "Neue oder geänderte Stundenpläne veröffentlicht"
+          body: "[Hier findest du die neuesten Stundenpläne und die History!](https://it-24-sommer-fiae-d.github.io/AutoTimetable/dist/index)\n\nEs wurden die folgenden neuen/geänderten Stundenpläne veröffentlicht:"
           draft: false
           prerelease: false
           files: ${{ env.CHANGED_FILES }}
