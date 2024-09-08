@@ -79,7 +79,7 @@ def generate_markdown(file_structure):
         for course, kws in file_structure.items():
             latest_kw = next(iter(kws))  # Die KW der neuesten Stunde
             latest_file = kws[latest_kw][0][1]  # Die erste Datei in der neuesten KW (Aktuell)
-            md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})]({dist_dir}/{latest_file})\n")
+            md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
         
         # Historie der Stundenpläne
         md_file.write("\n---\n")
