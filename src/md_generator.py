@@ -92,6 +92,10 @@ def generate_markdown(file_structure):
                     md_file.write(f"  - [Revision {rev}](./{file})\n")
             md_file.write("\n")
 
+################################################################################
+
+### Hauptprogramm ###
+
 if __name__ == "__main__":
     # Listet die Dateien auf
     files = list_dist_files()

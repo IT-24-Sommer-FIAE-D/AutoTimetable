@@ -152,53 +152,54 @@ def download_file(full_link, temp_path):
 
 ### Hauptprogramm ###
 
-# Die oben definierten Verzeichnisse erstellen, wenn sie nicht existieren
-create_directories([temp_dir, dist_dir])
+if __name__ == "__main__":
+    # Die oben definierten Verzeichnisse erstellen, wenn sie nicht existieren
+    create_directories([temp_dir, dist_dir])
 
-# Die Webseite mit dem Stundenplan herunterladen
-response = fetch_timetable_response(timetable_url)
+    # Die Webseite mit dem Stundenplan herunterladen
+    response = fetch_timetable_response(timetable_url)
 
-# HTML parsen: Das HTML-Dokument wird in ein Objekt umgewandelt, das wir durchsuchen können:
-# Wir erhalten eine Liste mit den li-Elementen, die die Kurse im Stundenplan repräsentieren.
-li_list = parse_timetable_html(response)
+    # HTML parsen: Das HTML-Dokument wird in ein Objekt umgewandelt, das wir durchsuchen können:
+    # Wir erhalten eine Liste mit den li-Elementen, die die Kurse im Stundenplan repräsentieren.
+    li_list = parse_timetable_html(response)
 
-# Variable, um zu verfolgen, ob neue Dateien gefunden wurden. Damit wir am Ende des Programms eine entsprechende Meldung ausgeben können.
-new_files_found = False
+    # Variable, um zu verfolgen, ob neue Dateien gefunden wurden. Damit wir am Ende des Programms eine entsprechende Meldung ausgeben können.
+    new_files_found = False
+            
+    # Alle li-Elemente in der Liste durchsuchen -> <li>...</li>
+    for li in li_list:
+        # Den span mit der Klasse 'name' finden: Das Span-Element mit der Klasse 'name' enthält den Namen des Kurses -> <span class="name">$NAME_DES_KURSES</span>
+        name_span = li.find('span', class_='name')
         
-# Alle li-Elemente in der Liste durchsuchen -> <li>...</li>
-for li in li_list:
-    # Den span mit der Klasse 'name' finden: Das Span-Element mit der Klasse 'name' enthält den Namen des Kurses -> <span class="name">$NAME_DES_KURSES</span>
-    name_span = li.find('span', class_='name')
-    
-    # Überprüfen, ob der Kursname dem Suchtext entspricht: Siehe `search_text` oben.
-    if name_span and search_text.search(name_span.get_text()):
-        # Die Dateiinformationen aus dem li-Element extrahieren
-        full_link, filename, temp_path, dist_path = extract_file_info(li, timetable_url, temp_dir, dist_dir)
-        
-        # Datei herunterladen und in `./temp/` temporär speichern.
-        download_file(full_link, temp_path)
-        
-        # Prüfen, ob die Datei bereits in ./dist/ existiert
-        if os.path.exists(dist_path):
-            # Hash der heruntergeladenen Datei und der vorhandenen Datei vergleichen
-            # Der Hash wird verwendet, um festzustellen, ob sich die Datei geändert hat.
-            # Wenn sich auch nur ein einziges Bit in der Datei ändert, ändert sich auch der Hash -> Lawinenprinzip: https://de.wikipedia.org/wiki/Lawineneffekt_(Kryptographie)
-            if file_hash(temp_path) != file_hash(dist_path):
-                # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./dist/`-Verzeichnis.
-                print("Datei wurde aktualisiert:", filename)
+        # Überprüfen, ob der Kursname dem Suchtext entspricht: Siehe `search_text` oben.
+        if name_span and search_text.search(name_span.get_text()):
+            # Die Dateiinformationen aus dem li-Element extrahieren
+            full_link, filename, temp_path, dist_path = extract_file_info(li, timetable_url, temp_dir, dist_dir)
+            
+            # Datei herunterladen und in `./temp/` temporär speichern.
+            download_file(full_link, temp_path)
+            
+            # Prüfen, ob die Datei bereits in ./dist/ existiert
+            if os.path.exists(dist_path):
+                # Hash der heruntergeladenen Datei und der vorhandenen Datei vergleichen
+                # Der Hash wird verwendet, um festzustellen, ob sich die Datei geändert hat.
+                # Wenn sich auch nur ein einziges Bit in der Datei ändert, ändert sich auch der Hash -> Lawinenprinzip: https://de.wikipedia.org/wiki/Lawineneffekt_(Kryptographie)
+                if file_hash(temp_path) != file_hash(dist_path):
+                    # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./dist/`-Verzeichnis.
+                    print("Datei wurde aktualisiert:", filename)
+                    new_files_found = True
+                    replace_or_create_file(temp_path, dist_path, 'Ersetzen')
+            else:
+                # Die Datei existiert noch nicht in `./dist/`. Daher kopieren wir sie dorthin.
+                print("Neue Datei gefunden:", filename)
                 new_files_found = True
-                replace_or_create_file(temp_path, dist_path, 'Ersetzen')
-        else:
-            # Die Datei existiert noch nicht in `./dist/`. Daher kopieren wir sie dorthin.
-            print("Neue Datei gefunden:", filename)
-            new_files_found = True
-            replace_or_create_file(temp_path, dist_path, 'Kopieren')
+                replace_or_create_file(temp_path, dist_path, 'Kopieren')
 
-# Wenn keine neuen Dateien gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
-# Die Fehler-Codes sind standardisiert: Exit-Code 0 bedeutet, dass das Programm erfolgreich beendet wurde. Alle anderen Werte bedeuten, dass ein Fehler aufgetreten ist.
-if not new_files_found:
-    print("Keine neuen oder aktualisierten Dateien gefunden.")
-    exit(1)
-else:
-    print("Neue oder aktualisierte Dateien gefunden und kopiert.")
-    # Wenn neue Dateien gefunden wurden, beendet sich das Programm hier von selbst mit Exit-Code 0.
+    # Wenn keine neuen Dateien gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
+    # Die Fehler-Codes sind standardisiert: Exit-Code 0 bedeutet, dass das Programm erfolgreich beendet wurde. Alle anderen Werte bedeuten, dass ein Fehler aufgetreten ist.
+    if not new_files_found:
+        print("Keine neuen oder aktualisierten Dateien gefunden.")
+        exit(1)
+    else:
+        print("Neue oder aktualisierte Dateien gefunden und kopiert.")
+        # Wenn neue Dateien gefunden wurden, beendet sich das Programm hier von selbst mit Exit-Code 0.
