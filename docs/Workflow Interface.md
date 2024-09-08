@@ -17,7 +17,7 @@ Dies kann beispielsweise wie folgt aussehen:
 #### Fußnoten
 
 ##### Fußnote 1
-- Hier findest du die [Workflow Datei](../.github/workflows/CreateRelease.yml) im Repository.
+- Hier findest du die [Workflow Datei](https://github.com/IT-24-Sommer-FIAE-D/AutoTimetable/blob/main/.github/workflows/CreateRelease.yml) im Repository.
 - Ein Workflow ist eine automatisierte Abfolge von Aktionen, die auf einem GitHub-Repository ausgeführt werden. Das Feature heißt **GitHub Actions** und ist in jedem Repository verfügbar.
 
 

@@ -5,9 +5,9 @@ Es ist möglich sich auf diesen Release zu registrieren und somit bei Änderunge
 
 ## Weitere Informationen
 
-- **[Aktuelle Stundenpläne und History](./dist/index)**
+- **[Aktuelle Stundenpläne und History](https://it-24-sommer-fiae-d.github.io/AutoTimetable/dist/index)**
 - [Hier geht's zum neuesten Release..](https://github.com/IT-24-Sommer-FIAE-D/AutoTimetable/releases/latest)
-- [Workflow Interface](./docs/Workflow%20Interface)
+- [Workflow Interface](https://it-24-sommer-fiae-d.github.io/AutoTimetable/docs/Workflow%20Interface)
 
 ## Auf neues Release registrieren
 
