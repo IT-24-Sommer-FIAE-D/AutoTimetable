@@ -15,8 +15,9 @@ import re
 
 timetable_url = "https://service.viona24.com/stpusnl/"   # URL der Webseite mit dem Stundenplan
 search_text = re.compile(r"US IT 2024 Sommer FIAE [DE]") # RegEx für den gesuchten Text: Siehe https://regexr.com/85b01
-dist_dir = './dist/'                                     # Temporärer Speicherort für heruntergeladene Dateien
-docs_dir = './docs/'                                     # Endgültiger Speicherort für Dateien
+base_dir = os.path.dirname(os.path.abspath(__file__))    # Basisverzeichnis des Skripts
+temp_dir = f'{base_dir}/../temp/'                        # Temporärer Speicherort für Dateien   -> das `../` bedeutet, dass das Verzeichnis eine Ebene höher liegt.
+dist_dir = f'{base_dir}/../dist/'                        # Endgültiger Speicherort für Dateien -|
 #####################
 
 ########################## Funktionen ##########################
@@ -32,9 +33,9 @@ def file_hash(filepath):
 
 # Funktion zum Ersetzen oder Erstellen einer Datei: Siehe https://docs.python.org/3/library/os.html#os.replace
 # Im Falle eines Fehlers wird das Programm mit Exit-Code 1 beendet.
-def replace_or_create_file(dist_path, docs_path, action='Ersetzen'):
+def replace_or_create_file(temp_path, dist_path, action='Ersetzen'):
     try:
-        os.replace(dist_path, docs_path)
+        os.replace(temp_path, dist_path)
     except Exception as e:
         print(f"Fehler beim {action} der Datei:", str(e))
         exit(1)
@@ -80,7 +81,7 @@ def parse_timetable_html(response):
 
 # Funktion zum Extrahieren der Dateiinformationen aus einem li-Element.
 # Die Funktion gibt die folgenden Werte als Tuple zurück: Link zur Datei, Dateiname, Pfad zum temporären Speicherort, Pfad zum endgültigen Speicherort.
-def extract_file_info(li, timetable_url, dist_dir, docs_dir):
+def extract_file_info(li, timetable_url, temp_dir, dist_dir):
     # Extrahiere den Link zur Datei
     link = li.find('a').get('href')
 
@@ -91,28 +92,28 @@ def extract_file_info(li, timetable_url, dist_dir, docs_dir):
     filename = os.path.basename(link)
     
     # Erstelle den Pfad zum temporären Speicherort
-    dist_path = os.path.join(dist_dir, filename)
+    temp_path = os.path.join(temp_dir, filename)
     
     # Erstelle den Pfad zum endgültigen Speicherort
-    docs_path = os.path.join(docs_dir, filename)
+    dist_path = os.path.join(dist_dir, filename)
     
     # Gib die Werte als Tuple zurück
-    return full_link, filename, dist_path, docs_path
+    return full_link, filename, temp_path, dist_path
 
 
 # Funktion zum Herunterladen einer Datei von einem Link und Speichern im temporären Speicherort.
 # Im Falle eines Fehlers wird das Programm mit Exit-Code 1 beendet.
-def download_file(full_link, dist_path):
+def download_file(full_link, temp_path):
     try:
         # Datei herunterladen
         file_response = requests.get(full_link)
         file_response.raise_for_status()  # Überprüft, ob der Statuscode auf einen Fehler hinweist
         
         # Datei im temporären Speicherort speichern
-        with open(dist_path, 'wb') as file:
+        with open(temp_path, 'wb') as file:
             file.write(file_response.content)
         
-        print(f"Datei erfolgreich heruntergeladen: {dist_path}")
+        print(f"Datei erfolgreich heruntergeladen: {temp_path}")
         
     except Exception as e:
         # Fehlerbehandlung beim Herunterladen oder Speichern der Datei
@@ -124,7 +125,7 @@ def download_file(full_link, dist_path):
 ### Hauptprogramm ###
 
 # Die oben definierten Verzeichnisse erstellen, wenn sie nicht existieren
-create_directories([dist_dir, docs_dir])
+create_directories([temp_dir, dist_dir])
 
 # Die Webseite mit dem Stundenplan herunterladen
 response = fetch_timetable_response(timetable_url)
@@ -144,26 +145,26 @@ for li in li_list:
     # Überprüfen, ob der Kursname dem Suchtext entspricht: Siehe `search_text` oben.
     if name_span and search_text.search(name_span.get_text()):
         # Die Dateiinformationen aus dem li-Element extrahieren
-        full_link, filename, dist_path, docs_path = extract_file_info(li, timetable_url, dist_dir, docs_dir)
+        full_link, filename, temp_path, dist_path = extract_file_info(li, timetable_url, temp_dir, dist_dir)
         
-        # Datei herunterladen und in `./dist/` temporär speichern.
-        download_file(full_link, dist_path)
+        # Datei herunterladen und in `./temp/` temporär speichern.
+        download_file(full_link, temp_path)
         
-        # Prüfen, ob die Datei bereits in ./docs/ existiert
-        if os.path.exists(docs_path):
+        # Prüfen, ob die Datei bereits in ./dist/ existiert
+        if os.path.exists(dist_path):
             # Hash der heruntergeladenen Datei und der vorhandenen Datei vergleichen
             # Der Hash wird verwendet, um festzustellen, ob sich die Datei geändert hat.
             # Wenn sich auch nur ein einziges Bit in der Datei ändert, ändert sich auch der Hash -> Lawinenprinzip: https://de.wikipedia.org/wiki/Lawineneffekt_(Kryptographie)
-            if file_hash(dist_path) != file_hash(docs_path):
-                # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./docs/`-Verzeichnis.
+            if file_hash(temp_path) != file_hash(dist_path):
+                # Die Datei hat sich geändert. Daher ersetzen wir die alte Datei durch die neue im `./dist/`-Verzeichnis.
                 print("Datei wurde aktualisiert:", filename)
                 new_files_found = True
-                replace_or_create_file(dist_path, docs_path, 'Ersetzen')
+                replace_or_create_file(temp_path, dist_path, 'Ersetzen')
         else:
-            # Die Datei existiert noch nicht in `./docs/`. Daher kopieren wir sie dorthin.
+            # Die Datei existiert noch nicht in `./dist/`. Daher kopieren wir sie dorthin.
             print("Neue Datei gefunden:", filename)
             new_files_found = True
-            replace_or_create_file(dist_path, docs_path, 'Kopieren')
+            replace_or_create_file(temp_path, dist_path, 'Kopieren')
 
 # Wenn keine neuen Dateien gefunden wurden, geben wir eine entsprechende Meldung aus und beenden das Programm mit Exit-Code 1.
 # Die Fehler-Codes sind standardisiert: Exit-Code 0 bedeutet, dass das Programm erfolgreich beendet wurde. Alle anderen Werte bedeuten, dass ein Fehler aufgetreten ist.
