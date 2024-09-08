@@ -18,10 +18,9 @@ jobs:
         run: |
           git checkout gh_pages
 
-      - name: Get main.py from main branch # Die `main.py` und `requirements.txt` Dateien aus dem `main` branch holen
+      - name: Get `src`, `docs` and `README.md` from `main` branch # Die `src/`, `docs/` und `README.md` Dateien aus dem `main` branch holen.
         run: |
-          git checkout main -- ./main.py
-          git checkout main -- ./requirements.txt
+          git checkout main -- ./src ./docs ./README.md
 
       - name: Set up Python # Python 3.x installieren
         uses: actions/setup-python@v5
@@ -31,24 +30,36 @@ jobs:
       - name: Install dependencies # Die benötigten Python Pakete installieren: Siehe `requirements.txt`
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r ./src/requirements.txt
 
       - name: Run the script # Das Python Skript ausführen
         run: |
-          python main.py
+          python ./src/main.py
           echo "SCRIPT_EXIT_CODE=$?" >> $GITHUB_ENV
         continue-on-error: true
 
-      - name: Delete `main.py` and `requirements.txt` # Die `main.py` und `requirements.txt` Dateien löschen und aus dem Staging entfernen, damit sie nicht im `gh_pages` branch landen.
+      - name: Delete `src` and reset changes # Die `src/` Dateien löschen und die Änderungen zurücksetzen
         run: |
-          rm main.py
-          rm requirements.txt
-          git reset -- ./main.py ./requirements.txt
+          rm -rf ./src/
+          git reset -- ./src
 
-      - name: Stage changes in docs and check for changes # Die Änderungen in `docs/` hinzufügen und prüfen, ob es Änderungen gibt
+      - name: Stage other changes # Die restlichen Änderungen hinzufügen
+        run: |
+          git add ./docs/ ./README.md
+          if git diff --cached --quiet; then
+            echo "No changes in docs and README.md"
+          else
+            git config --local user.email "actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add ./docs/ ./README.md
+            git commit -m "Update docs and README.md in gh_pages branch"
+            git push origin gh_pages --force
+          fi
+
+      - name: Stage changes in dist and check for changes # Die Änderungen in `dist/` hinzufügen und prüfen, ob es Änderungen gibt
         id: changes
         run: |
-          git add ./docs/
+          git add ./dist/
           if git diff --cached --quiet; then
             echo "no_changes=true" >> $GITHUB_ENV
           else
@@ -65,8 +76,8 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add ./docs/
-          git commit -m "Update docs in gh_pages branch"
+          git add ./dist/
+          git commit -m "Update dist in gh_pages branch"
           git push origin gh_pages --force
 
       - name: Create Release # Ein Release erstellen, wenn es Änderungen gibt: Siehe `if: env.no_changes == 'false'`
