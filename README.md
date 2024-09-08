@@ -5,6 +5,7 @@ Es ist möglich sich auf diesen Release zu registrieren und somit bei Änderunge
 
 ## Weitere Informationen
 
+- **[Aktuelle Stundenpläne und History](./dist/index)**
 - [Hier geht's zum neuesten Release..](https://github.com/IT-24-Sommer-FIAE-D/AutoTimetable/releases/latest)
 - [Workflow Interface](./docs/Workflow%20Interface)
 
