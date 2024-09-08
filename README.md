@@ -3,7 +3,9 @@
 Das Python-Script **Auto Timetable Fetcher** ist ein Tool, das es ermöglicht, den Stundenplan aus dem Stundenplan-Portal der Viona automatisiert auf Änderungen zu überprüfen und bei Bedarf einen neuen Release zu erstellen.
 Es ist möglich sich auf diesen Release zu registrieren und somit bei Änderungen im Stundenplan benachrichtigt zu werden.
 
-[Hier geht's zum neuesten Release..](https://github.com/IT-24-Sommer-FIAE-D/AutoTimetable/releases/latest)
+## Weitere Informationen
+
+- [Workflow Interface](./docs/Workflow%20Interface.md)
 
 ## Auf neues Release registrieren
 
