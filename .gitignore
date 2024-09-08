@@ -1,2 +1,4 @@
 dist/*
 docs/*.pdf
+__pycache__/
+.pytest_cache/
