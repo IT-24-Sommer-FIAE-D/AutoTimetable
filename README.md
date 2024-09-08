@@ -29,4 +29,4 @@ Es ist möglich sich auf diesen Release zu registrieren und somit bei Änderunge
 
 Klone dieses Repository mit `git clone https://github.com/IT-24-Sommer-FIAE-D/AutoTimetable.git` und wechsle in das Verzeichnis mit `cd AutoTimetable`.
 
-Installiere nun alle abhängigkeiten mit `pip install -r requirements.txt` und führe das Skript mit `python main.py` aus. Bitte vermeide es, etwaige lokal heruntergeladene Dateien zu pushen.
+Installiere nun alle abhängigkeiten mit `pip install -r ./src/requirements.txt` und führe das Skript mit `python ./src/main.py` aus. Bitte vermeide es, etwaige lokal heruntergeladene Dateien zu pushen.
