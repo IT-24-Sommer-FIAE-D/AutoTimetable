@@ -1,8 +1,8 @@
-name: Scheduled Run and Release
+name: Search for new or changed schedules and create a release
 
 on:
   schedule:
-    - cron: "0 */1 * * *" # Wird jede Stunde ausgeführt: Siehe https://www.linuxwiki.de/crontab
+    - cron: "*/15 * * * *" # Wird alle 15 Minuten ausgeführt: Siehe https://www.linuxwiki.de/crontab
   workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
