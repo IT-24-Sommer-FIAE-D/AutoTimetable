@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - gh_pages
-    paths:
-      - "dist/*.pdf"
   workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
