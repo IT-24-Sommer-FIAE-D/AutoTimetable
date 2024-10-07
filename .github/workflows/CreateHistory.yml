@@ -3,7 +3,7 @@ name: Create a Markdown file with the history of the timetables
 on:
   push:
     branches:
-      - gh_pages
+      - gh-pages
   workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
