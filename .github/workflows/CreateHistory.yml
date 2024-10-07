@@ -1,11 +1,8 @@
 name: Create a Markdown file with the history of the timetables
 
 on:
-  push:
-    branches:
-      - gh_pages
-    paths:
-      - "*"
+  schedule:
+    - cron: "*/5 * * * *" # Wird alle 5 Minuten ausgeführt: Siehe https://www.linuxwiki.de/crontab
   workflow_dispatch: # Erlaubt auch das manuelle Auslösen des Workflows
 
 jobs:
