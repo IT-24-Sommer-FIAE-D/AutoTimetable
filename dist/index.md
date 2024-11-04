@@ -37,7 +37,8 @@
 - **KW 44**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW44.pdf)
 - **KW 43**:
-  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW43.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2024_abKW43.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW43_00.pdf)
 - **KW 42**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW42.pdf)
 - **KW 41**:
