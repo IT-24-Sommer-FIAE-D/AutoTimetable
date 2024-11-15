@@ -1,13 +1,15 @@
 # Stundenpläne
 
-### [Aktuellster Plan Kurs D (KW 46)](./US_IT_2024_Sommer_FIAE_D_2024_abKW46.pdf)
-### [Aktuellster Plan Kurs E (KW 46)](./US_IT_2024_Sommer_FIAE_E_2024_abKW46.pdf)
+### [Aktuellster Plan Kurs D (KW 47)](./US_IT_2024_Sommer_FIAE_D_2024_abKW47.pdf)
+### [Aktuellster Plan Kurs E (KW 47)](./US_IT_2024_Sommer_FIAE_E_2024_abKW47.pdf)
 
 ---
 
 # Historie der Stundenpläne
 
 ## Kurs D:
+- **KW 47**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW47.pdf)
 - **KW 46**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW46.pdf)
 - **KW 45**:
@@ -34,6 +36,8 @@
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW35.pdf)
 
 ## Kurs E:
+- **KW 47**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW47.pdf)
 - **KW 46**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW46.pdf)
 - **KW 45**:
