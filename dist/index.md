@@ -9,7 +9,8 @@
 
 ## Kurs D:
 - **KW 47**:
-  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW47.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_D_2024_abKW47.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW47_00.pdf)
 - **KW 46**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW46.pdf)
 - **KW 45**:
@@ -37,7 +38,8 @@
 
 ## Kurs E:
 - **KW 47**:
-  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW47.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2024_abKW47.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW47_00.pdf)
 - **KW 46**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW46.pdf)
 - **KW 45**:
