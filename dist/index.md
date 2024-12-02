@@ -9,7 +9,8 @@
 
 ## Kurs D:
 - **KW 49**:
-  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW49.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_D_2024_abKW49.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW49_00.pdf)
 - **KW 48**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW48.pdf)
 - **KW 47**:
