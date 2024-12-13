@@ -48,7 +48,8 @@
 
 ## Kurs E:
 - **KW 51**:
-  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW51.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2024_abKW51.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW51_00.pdf)
 - **KW 50**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW50.pdf)
 - **KW 49**:
