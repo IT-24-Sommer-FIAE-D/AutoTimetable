@@ -19,8 +19,6 @@
 
 ## Jahr 2025
 
-### [Aktuellster Plan Kurs D (KW 05)](./US_IT_2024_Sommer_FIAE_D_2025_abKW05.pdf)
-### [Aktuellster Plan Kurs E (KW 05)](./US_IT_2024_Sommer_FIAE_E_2025_abKW05.pdf)
 
 ---
 
@@ -57,8 +55,6 @@
 
 ## Jahr 2024
 
-### [Aktuellster Plan Kurs D (KW 51)](./US_IT_2024_Sommer_FIAE_D_2024_abKW51.pdf)
-### [Aktuellster Plan Kurs E (KW 51)](./US_IT_2024_Sommer_FIAE_E_2024_abKW51.pdf)
 
 ---
 
