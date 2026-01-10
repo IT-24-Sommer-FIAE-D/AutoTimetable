@@ -6,7 +6,11 @@ import re
 base_dir = os.path.dirname(os.path.abspath(__file__)) # Basisverzeichnis des Skripts
 dist_dir = f'{base_dir}/../dist/'                     # Die Stundenpläne befinden sich im dist-Ordner
 output_md = f'{base_dir}/../dist/index.md'            # Speicherort und Name der generierten Markdown-Datei
-filename_pattern = re.compile(r'US_IT_2024_Sommer_FIAE_([DE])_2024_abKW(\d{2})(?:_(\d+))?.pdf') # Muster: US_IT_2024_Sommer_FIAE_[D|E]_2024_abKW[xx](_[revision]).pdf
+
+# Muster: US_IT_2024_Sommer_FIAE_[D|E]_2024_abKW[xx](_[revision]).pdf
+filename_pattern = re.compile(
+    r'US_IT_\d{4}_Sommer_FIAE_([DE])_(\d{4})_abKW(\d{2})(?:_(\d+))?\.pdf'
+)
 #####################
 
 ########################## Funktionen ##########################
@@ -30,42 +34,49 @@ def list_dist_files():
 
     return files
 
-# Funktion zur Extraktion des Kurses, der KW und der Revisionen
+# Funktion zur Extraktion des Kurses, des Jahres, der KW und der Revisionen
 def extract_file_info(files):
-    file_structure = {'D': {}, 'E': {}}
+    # Struktur: {year: {'D': {kw: [(rev, file), ...]}, 'E': {...}}}
+    file_structure = {}
 
     for file in files:
         match = filename_pattern.match(file)
         if match:
-            course = match.group(1)  # D oder E
-            kw = match.group(2)      # Kalenderwoche
-            revision = match.group(3) or '100'  # Revision (falls keine vorhanden, setze '100' für "Aktuell")
+            course = match.group(1)    # D oder E
+            year = match.group(2)      # Jahr (YYYY)
+            kw = match.group(3)        # Kalenderwoche (2-stellig)
+            revision = match.group(4) or '100'  # Revision (falls keine vorhanden, setze '100' für "Aktuell")
+
+            if year not in file_structure:
+                file_structure[year] = {'D': {}, 'E': {}}
 
             # Falls die KW noch nicht existiert, füge sie hinzu
-            if kw not in file_structure[course]:
-                file_structure[course][kw] = []
+            if kw not in file_structure[year][course]:
+                file_structure[year][course][kw] = []
 
             # Füge die Datei mit ihrer Revision hinzu
-            file_structure[course][kw].append((int(revision), file))
+            file_structure[year][course][kw].append((int(revision), file))
 
-    # Sortiere die Dateien nach Revision absteigend (größte Revision zuerst, "Aktuell" = 100 an erster Stelle)
-    for course in file_structure:
-        for kw in file_structure[course]:
-            # Sortiere die Dateien innerhalb jeder KW nach Revision absteigend
-            file_structure[course][kw].sort(reverse=True)
-            
-            # Zähle die Anzahl der Dateien pro KW und ersetze die Revision 100 durch die entsprechende Zahl
-            total_files = len(file_structure[course][kw])
-            counter = total_files - 1  # Zähle von der höchsten Revisionsnummer abwärts
+    # Sortiere Dateien innerhalb jeder (year, course, kw)
+    for year in file_structure:
+        for course in file_structure[year]:
+            for kw in file_structure[year][course]:
+                file_structure[year][course][kw].sort(reverse=True)
 
-            for i, (rev, file) in enumerate(file_structure[course][kw]):
-                if rev == 100:
-                    file_structure[course][kw][i] = (counter, file)  # Setze auf die nächste Revision
-                counter -= 1  # Für jede Datei die Revision verringern
+                total_files = len(file_structure[year][course][kw])
+                counter = total_files - 1
+                for i, (rev, file) in enumerate(file_structure[year][course][kw]):
+                    if rev == 100:
+                        file_structure[year][course][kw][i] = (counter, file)
+                    counter -= 1
 
-    # Sortiere die Kurse nach KW absteigend
-    for course in file_structure:
-        file_structure[course] = dict(sorted(file_structure[course].items(), key=lambda x: int(x[0]), reverse=True))
+            # KWs absteigend sortieren (wie vorher)
+            file_structure[year][course] = dict(
+                sorted(file_structure[year][course].items(), key=lambda x: int(x[0]), reverse=True)
+            )
+
+    # Jahre absteigend sortieren
+    file_structure = dict(sorted(file_structure.items(), key=lambda x: int(x[0]), reverse=True))
 
     return file_structure
 
@@ -75,22 +86,27 @@ def generate_markdown(file_structure):
         # Überschrift
         md_file.write("# Stundenpläne\n\n")
 
-        # Verweise auf die aktuellsten Stundenpläne
-        for course, kws in file_structure.items():
-            latest_kw = next(iter(kws))  # Die KW der neuesten Stunde
-            latest_file = kws[latest_kw][0][1]  # Die erste Datei in der neuesten KW (Aktuell)
-            md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
-        
-        # Historie der Stundenpläne
-        md_file.write("\n---\n")
-        md_file.write("\n# Historie der Stundenpläne\n\n")
-        for course, kws in file_structure.items():
-            md_file.write(f"## Kurs {course}:\n")
-            for kw, files in kws.items():
-                md_file.write(f"- **KW {kw}**:\n")
-                for rev, file in files:
-                    md_file.write(f"  - [Revision {rev}](./{file})\n")
-            md_file.write("\n")
+        for year, courses in file_structure.items():
+            md_file.write(f"## Jahr {year}\n\n")
+
+            # Verweise auf die aktuellsten Stundenpläne (pro Kurs innerhalb des Jahres)
+            for course, kws in courses.items():
+                if not kws:
+                    continue
+                latest_kw = next(iter(kws))
+                latest_file = kws[latest_kw][0][1]
+                md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
+
+            # Historie der Stundenpläne
+            md_file.write("\n---\n")
+            md_file.write("\n### Historie der Stundenpläne\n\n")
+            for course, kws in courses.items():
+                md_file.write(f"#### Kurs {course}:\n")
+                for kw, files in kws.items():
+                    md_file.write(f"- **KW {kw}**:\n")
+                    for rev, file in files:
+                        md_file.write(f"  - [Revision {rev}](./{file})\n")
+                md_file.write("\n")
 
 ################################################################################
 
@@ -100,7 +116,7 @@ if __name__ == "__main__":
     # Listet die Dateien auf
     files = list_dist_files()
 
-    # Extrahiere Kurs, KW und Revisionen
+    # Extrahiere Kurs, Jahr, KW und Revisionen
     file_structure = extract_file_info(files)
 
     # Generiere die Markdown-Datei
