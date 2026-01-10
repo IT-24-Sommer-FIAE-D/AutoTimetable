@@ -100,9 +100,9 @@ def generate_markdown(file_structure):
                     latest_kw = next(iter(kws))
                     latest_file = kws[latest_kw][0][1]
                     md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
+                    md_file.write("\n---\n")
 
             # Historie der Stundenpläne
-            md_file.write("\n---\n")
             md_file.write("\n### Historie der Stundenpläne\n\n")
             for course, kws in courses.items():
                 md_file.write(f"#### Kurs {course}:\n")
