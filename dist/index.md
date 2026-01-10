@@ -3,6 +3,8 @@
 ## Jahr 2026
 
 ### [Aktuellster Plan Kurs D (KW 03)](./US_IT_2024_Sommer_FIAE_D_2026_abKW03.pdf)
+
+---
 ### [Aktuellster Plan Kurs E (KW 03)](./US_IT_2024_Sommer_FIAE_E_2026_abKW03.pdf)
 
 ---
@@ -19,8 +21,6 @@
 
 ## Jahr 2025
 
-
----
 
 ### Historie der Stundenpläne
 
@@ -55,8 +55,6 @@
 
 ## Jahr 2024
 
-
----
 
 ### Historie der Stundenpläne
 
