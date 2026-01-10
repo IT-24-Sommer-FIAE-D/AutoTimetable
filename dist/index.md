@@ -1,13 +1,70 @@
 # Stundenpläne
 
+## Jahr 2026
+
+### [Aktuellster Plan Kurs D (KW 03)](./US_IT_2024_Sommer_FIAE_D_2026_abKW03.pdf)
+### [Aktuellster Plan Kurs E (KW 03)](./US_IT_2024_Sommer_FIAE_E_2026_abKW03.pdf)
+
+---
+
+### Historie der Stundenpläne
+
+#### Kurs D:
+- **KW 03**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2026_abKW03.pdf)
+
+#### Kurs E:
+- **KW 03**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2026_abKW03.pdf)
+
+## Jahr 2025
+
+### [Aktuellster Plan Kurs D (KW 05)](./US_IT_2024_Sommer_FIAE_D_2025_abKW05.pdf)
+### [Aktuellster Plan Kurs E (KW 05)](./US_IT_2024_Sommer_FIAE_E_2025_abKW05.pdf)
+
+---
+
+### Historie der Stundenpläne
+
+#### Kurs D:
+- **KW 05**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2025_abKW05.pdf)
+- **KW 04**:
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_D_2025_abKW04.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2025_abKW04_00.pdf)
+- **KW 03**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2025_abKW03.pdf)
+- **KW 02**:
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_D_2025_abKW02.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2025_abKW02_00.pdf)
+- **KW 01**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2025_abKW01.pdf)
+
+#### Kurs E:
+- **KW 05**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2025_abKW05.pdf)
+- **KW 04**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2025_abKW04.pdf)
+- **KW 03**:
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2025_abKW03.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2025_abKW03_00.pdf)
+- **KW 02**:
+  - [Revision 2](./US_IT_2024_Sommer_FIAE_E_2025_abKW02.pdf)
+  - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2025_abKW02_01.pdf)
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2025_abKW02_00.pdf)
+- **KW 01**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2025_abKW01.pdf)
+
+## Jahr 2024
+
 ### [Aktuellster Plan Kurs D (KW 51)](./US_IT_2024_Sommer_FIAE_D_2024_abKW51.pdf)
 ### [Aktuellster Plan Kurs E (KW 51)](./US_IT_2024_Sommer_FIAE_E_2024_abKW51.pdf)
 
 ---
 
-# Historie der Stundenpläne
+### Historie der Stundenpläne
 
-## Kurs D:
+#### Kurs D:
 - **KW 51**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW51.pdf)
 - **KW 50**:
@@ -46,7 +103,7 @@
 - **KW 35**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2024_abKW35.pdf)
 
-## Kurs E:
+#### Kurs E:
 - **KW 51**:
   - [Revision 1](./US_IT_2024_Sommer_FIAE_E_2024_abKW51.pdf)
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2024_abKW51_00.pdf)
