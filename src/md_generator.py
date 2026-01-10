@@ -86,16 +86,20 @@ def generate_markdown(file_structure):
         # Überschrift
         md_file.write("# Stundenpläne\n\n")
 
+        # Finde das aktuellste Jahr
+        latest_year = next(iter(file_structure), None)
+
         for year, courses in file_structure.items():
             md_file.write(f"## Jahr {year}\n\n")
 
-            # Verweise auf die aktuellsten Stundenpläne (pro Kurs innerhalb des Jahres)
-            for course, kws in courses.items():
-                if not kws:
-                    continue
-                latest_kw = next(iter(kws))
-                latest_file = kws[latest_kw][0][1]
-                md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
+            # Verweise auf die aktuellsten Stundenpläne (pro Kurs innerhalb des aktuellsten Jahres)
+            if year == latest_year:
+                for course, kws in courses.items():
+                    if not kws:
+                        continue
+                    latest_kw = next(iter(kws))
+                    latest_file = kws[latest_kw][0][1]
+                    md_file.write(f"### [Aktuellster Plan Kurs {course} (KW {latest_kw})](./{latest_file})\n")
 
             # Historie der Stundenpläne
             md_file.write("\n---\n")
