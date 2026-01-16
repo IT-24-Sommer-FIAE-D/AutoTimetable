@@ -2,20 +2,24 @@
 
 ## Jahr 2026
 
-### [Aktuellster Plan Kurs D (KW 03)](./US_IT_2024_Sommer_FIAE_D_2026_abKW03.pdf)
+### [Aktuellster Plan Kurs D (KW 04)](./US_IT_2024_Sommer_FIAE_D_2026_abKW04.pdf)
 
 ---
-### [Aktuellster Plan Kurs E (KW 03)](./US_IT_2024_Sommer_FIAE_E_2026_abKW03.pdf)
+### [Aktuellster Plan Kurs E (KW 04)](./US_IT_2024_Sommer_FIAE_E_2026_abKW04.pdf)
 
 ---
 
 ### Historie der Stundenpläne
 
 #### Kurs D:
+- **KW 04**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2026_abKW04.pdf)
 - **KW 03**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_D_2026_abKW03.pdf)
 
 #### Kurs E:
+- **KW 04**:
+  - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2026_abKW04.pdf)
 - **KW 03**:
   - [Revision 0](./US_IT_2024_Sommer_FIAE_E_2026_abKW03.pdf)
 
